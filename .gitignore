@@ -1,0 +1,30 @@
+# Byte-compiled / caches
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual envs
+.env/
+.venv/
+env/
+venv/
+
+# VSCode
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data dumps & activations
+data/activations/
+data/vectors/
+
+# Model weights & checkpoints
+models/
+*.safetensors
+*.bin
+*/pytorch_model*.bin
+
+# Logs and outputs
+*.log
+outputs/

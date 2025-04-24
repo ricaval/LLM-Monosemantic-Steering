@@ -22,7 +22,7 @@ Inspired by Anthropic's *Scaling Monosemanticity* paper, we adapt the technique 
   - Medical QA dataset (for final evaluation).
   - Curated external medical prompts (for feature extraction).
 - **Technique**:
-  1. Capture residual stream activations at a middle layer (Block 12).
+  1. Capture residual stream activations at a middle layer (Block 16).
   2. Train a Sparse Autoencoder (SAE) to extract interpretable feature vectors.
   3. Identify features associated with high factuality medical answers.
   4. Inject these features at inference.
@@ -37,7 +37,6 @@ Structure and Environment setup in progress.
 ## Notes
 - CUDA 12.8 targeted.
 - Python 3.11 environment.
-- Lightweight design for <=6h full training/eval runs.
 
 ## Citation / Inspiration
 - [Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet]([https://transformer-circuits.pub/2024/scaling-monosemanticity/index.html](https://transformer-circuits.pub/2024/scaling-monosemanticity/) by Anthropic.

@@ -28,3 +28,6 @@ models/
 # Logs and outputs
 *.log
 outputs/
+
+!models/.keep
+!data/.keep

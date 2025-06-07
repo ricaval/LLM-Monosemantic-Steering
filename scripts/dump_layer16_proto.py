@@ -29,12 +29,12 @@ model = AutoModelForCausalLM.from_pretrained(
 )
 # No .to("cuda")
 
-# 2) Hook layer 16
+# 2) Hook Block 16 (index 15)
 act_buffer = {}
 def hook_fn(module, inp, out):
     # out: [1, T, D]
     act_buffer["raw"] = out.detach().cpu().numpy()[0]
-model.model.layers[16].post_attention_layernorm.register_forward_hook(hook_fn)
+model.model.layers[15].post_attention_layernorm.register_forward_hook(hook_fn)
 
 # 3) Prepare output
 os.makedirs(OUT_PATH.parent, exist_ok=True)
@@ -52,7 +52,7 @@ for ex in PROMPTS:
         gen_ids = model.generate(**enc, max_new_tokens=20)
     text_out = tokenizer.decode(gen_ids[0], skip_special_tokens=True)
 
-    # Capture + pool layer16 activations
+    # Capture + pool Block 16 activations
     raw = act_buffer.pop("raw")            # [T,4096]
     vec = raw.mean(axis=0).astype("float16")  # pool + quantize
 

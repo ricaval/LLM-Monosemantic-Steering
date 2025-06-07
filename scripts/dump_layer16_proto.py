@@ -1,22 +1,28 @@
 #!/usr/bin/env python
-import os, json, torch
+import os
+import json
+import torch
+from pathlib import Path
 import numpy as np
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
 # ——— CONFIG ———
+# Paths are resolved relative to this file so the script can be executed
+# from any working directory.
+BASE_DIR = Path(__file__).resolve().parent.parent
 # path to the flattened snapshot dir
-MODEL_DIR = os.path.expanduser("../models/mistral_cache")
+MODEL_DIR = BASE_DIR / "models" / "mistral_cache"
 PROMPTS = [
     {"id": 0, "prompt": "What is aspirin for?"},
     {"id": 1, "prompt": "Define diabetic ketoacidosis."},
 ]
-OUT_PATH = os.path.expanduser("../data/activations/layer16_proto.jsonl")
+OUT_PATH = BASE_DIR / "data" / "activations" / "layer16_proto.jsonl"
 # —————————————————
 
 # 1) Load tokenizer + model once
-tokenizer = AutoTokenizer.from_pretrained(MODEL_DIR, local_files_only=True)
+tokenizer = AutoTokenizer.from_pretrained(str(MODEL_DIR), local_files_only=True)
 model = AutoModelForCausalLM.from_pretrained(
-    MODEL_DIR,
+    str(MODEL_DIR),
     local_files_only=True,
     torch_dtype=torch.float16,
     device_map="auto",    # Auto offloads & pins shards
@@ -31,7 +37,7 @@ def hook_fn(module, inp, out):
 model.model.layers[16].post_attention_layernorm.register_forward_hook(hook_fn)
 
 # 3) Prepare output
-os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
+os.makedirs(OUT_PATH.parent, exist_ok=True)
 fout = open(OUT_PATH, "w")
 
 # 4) Loop prompts
